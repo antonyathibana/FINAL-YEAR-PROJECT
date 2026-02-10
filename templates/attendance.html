@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take Attendance - Smart Attendance System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .page-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+        }
+        
+        .sidebar-header {
+            text-align: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-header h2 {
+            font-size: 22px;
+            font-weight: 600;
+        }
+        
+        .sidebar-header p {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        
+        .nav-menu {
+            list-style: none;
+        }
+        
+        .nav-item {
+            margin: 5px 15px;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .nav-link.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .nav-link i {
+            margin-right: 12px;
+            width: 20px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 30px;
+            background: #f5f7fa;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            color: #333;
+        }
+        
+        .back-btn {
+            padding: 10px 20px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .back-btn:hover {
+            background: #5a6268;
+        }
+        
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+        
+        /* Camera Card */
+        .camera-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .camera-card h2 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .video-container {
+            position: relative;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        #videoFeed {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        #noVideoMessage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 18px;
+            text-align: center;
+            z-index: 10;
+        }
+        
+        #noVideoMessage i {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        
+        .camera-controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Stats Sidebar */
+        .stats-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card p {
+            font-size: 14px;
+            color: #888;
+        }
+        
+        .stat-card.total {
+            border-top: 4px solid #667eea;
+        }
+        
+        .stat-card.total h3 {
+            color: #667eea;
+        }
+        
+        .stat-card.present {
+            border-top: 4px solid #11998e;
+        }
+        
+        .stat-card.present h3 {
+            color: #11998e;
+        }
+        
+        .stat-card.absent {
+            border-top: 4px solid #eb3349;
+        }
+        
+        .stat-card.absent h3 {
+            color: #eb3349;
+        }
+        
+        .stat-card.rate {
+            border-top: 4px solid #f093fb;
+        }
+        
+        .stat-card.rate h3 {
+            color: #f093fb;
+        }
+        
+        /* Attendance List */
+        .attendance-list {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .attendance-list h3 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+            position: sticky;
+            top: 0;
+            background: white;
+            padding-bottom: 10px;
+        }
+        
+        .attendance-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .attendance-item .avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 15px;
+        }
+        
+        .attendance-item .info {
+            flex: 1;
+        }
+        
+        .attendance-item .name {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .attendance-item .id {
+            font-size: 12px;
+            color: #888;
+        }
+        
+        .attendance-item .time {
+            font-size: 14px;
+            color: #11998e;
+            font-weight: 500;
+        }
+        
+        .no-records {
+            text-align: center;
+            padding: 30px;
+            color: #888;
+        }
+        
+        .no-records i {
+            font-size: 40px;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+        
+        /* Legend */
+        .legend {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+        }
+        
+        .legend-color.green {
+            background: #0f0;
+        }
+        
+        .legend-color.yellow {
+            background: #ff0;
+        }
+        
+        .legend-color.red {
+            background: #f00;
+        }
+        
+        .legend-color.blue {
+            background: #00f;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1100px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-sidebar {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            
+            .stat-card {
+                flex: 1;
+                min-width: 150px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .page-container {
+                flex-direction: column;
+            }
+            
+            .camera-controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>🎓 Smart Attendance</h2>
+                <p>Face Recognition System</p>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/dashboard" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/register" class="nav-link">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Register Student</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/attendance" class="nav-link active">
+                        <i class="fas fa-camera"></i>
+                        <span>Take Attendance</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/view_attendance" class="nav-link">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span>View Attendance</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/reports" class="nav-link">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Reports</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/logout" class="nav-link">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <h1>📸 Take Attendance</h1>
+                <a href="/dashboard" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+            </div>
+            
+            <div class="content-grid">
+                <!-- Camera Section -->
+                <div class="camera-card">
+                    <h2>🎥 Live Camera Feed</h2>
+                    <div class="video-container">
+                        <img id="videoFeed" src="" alt="Video Feed">
+                        <div id="noVideoMessage">
+                            <i class="fas fa-video-slash"></i>
+                            <p>Camera is off</p>
+                            <p style="font-size: 14px; margin-top: 10px;">Click "Start Camera" to begin</p>
+                        </div>
+                    </div>
+                    <div class="camera-controls">
+                        <button id="startBtn" class="btn btn-success" onclick="startCamera()">
+                            <i class="fas fa-play"></i> Start Camera
+                        </button>
+                        <button id="stopBtn" class="btn btn-danger" onclick="stopCamera()" disabled>
+                            <i class="fas fa-stop"></i> Stop Camera
+                        </button>
+                    </div>
+                    <div class="legend">
+                        <div class="legend-item">
+                            <div class="legend-color green"></div>
+                            <span>Recognized</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color yellow"></div>
+                            <span>Already Marked</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color red"></div>
+                            <span>Unknown</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color blue"></div>
+                            <span>Face Detected</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stats & List -->
+                <div class="stats-sidebar">
+                    <div class="stat-card total">
+                        <h3 id="totalStudents">0</h3>
+                        <p>Total Students</p>
+                    </div>
+                    <div class="stat-card present">
+                        <h3 id="presentCount">0</h3>
+                        <p>Present Today</p>
+                    </div>
+                    <div class="stat-card absent">
+                        <h3 id="absentCount">0</h3>
+                        <p>Absent Today</p>
+                    </div>
+                    <div class="stat-card rate">
+                        <h3 id="attendanceRate">0%</h3>
+                        <p>Attendance Rate</p>
+                    </div>
+                    
+                    <div class="attendance-list">
+                        <h3>📋 Today's Attendance</h3>
+                        <div id="attendanceList">
+                            <div class="no-records">
+                                <i class="fas fa-clipboard-list"></i>
+                                <p>No attendance recorded yet</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        let cameraStream = null;
+        let refreshInterval = null;
+        
+        // Start Camera - Uses Flask video feed with face recognition
+        async function startCamera() {
+            try {
+                // Start camera on server side
+                const response = await fetch('/start_camera', { method: 'POST' });
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    // Show the Flask video feed with face recognition
+                    const videoFeed = document.getElementById('videoFeed');
+                    videoFeed.src = '/video_feed';
+                    videoFeed.style.display = 'block';
+                    document.getElementById('noVideoMessage').style.display = 'none';
+                    
+                    document.getElementById('startBtn').disabled = true;
+                    document.getElementById('stopBtn').disabled = false;
+                    
+                    // Start refreshing stats
+                    loadStats();
+                    refreshInterval = setInterval(loadStats, 2000);
+                }
+                
+            } catch (err) {
+                alert('Error starting camera: ' + err.message);
+                console.error(err);
+            }
+        }
+        
+        // Stop Camera
+        async function stopCamera() {
+            try {
+                await fetch('/stop_camera', { method: 'POST' });
+            } catch (err) {
+                console.error('Error stopping camera on server:', err);
+            }
+            
+            // Stop local stream if any
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
+            }
+            
+            const videoFeed = document.getElementById('videoFeed');
+            videoFeed.src = '';
+            videoFeed.style.display = 'none';
+            document.getElementById('noVideoMessage').style.display = 'block';
+            
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+            
+            // Stop refreshing
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+                refreshInterval = null;
+            }
+        }
+        
+        // Load statistics
+        async function loadStats() {
+            try {
+                const response = await fetch('/get_attendance_status');
+                const data = await response.json();
+                
+                const totalStudents = data.total_students || 0;
+                const presentCount = data.present_count || 0;
+                const absentCount = totalStudents - presentCount;
+                const rate = totalStudents > 0 ? Math.round((presentCount / totalStudents) * 100) : 0;
+                
+                document.getElementById('totalStudents').textContent = totalStudents;
+                document.getElementById('presentCount').textContent = presentCount;
+                document.getElementById('absentCount').textContent = absentCount >= 0 ? absentCount : 0;
+                document.getElementById('attendanceRate').textContent = rate + '%';
+                
+                updateAttendanceList(data.students || []);
+                
+            } catch (err) {
+                console.error('Error loading stats:', err);
+            }
+        }
+        
+        // Update attendance list
+        function updateAttendanceList(students) {
+            const list = document.getElementById('attendanceList');
+            
+            if (students.length === 0) {
+                list.innerHTML = `
+                    <div class="no-records">
+                        <i class="fas fa-clipboard-list"></i>
+                        <p>No attendance recorded yet</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            students.forEach(student => {
+                const initials = student.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                html += `
+                    <div class="attendance-item">
+                        <div class="avatar">${initials}</div>
+                        <div class="info">
+                            <div class="name">${student.name}</div>
+                            <div class="id">${student.student_id}</div>
+                        </div>
+                        <div class="time">${student.time}</div>
+                    </div>
+                `;
+            });
+            
+            list.innerHTML = html;
+        }
+        
+        // Initial load
+        document.addEventListener('DOMContentLoaded', loadStats);
+    </script>
+</body>
+</html>
+

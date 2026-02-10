@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+.venv/
+
+# Environment
+.env
+.venv
+venv/
+ENV/
+
+# Database
+*.db
+*.sqlite3
+
+# Uploads
+static/student_images/*
+static/reports/*
+!static/student_images/.gitkeep
+!static/reports/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
+ehthumbs.db
+
+# Logs
+*.log
+
