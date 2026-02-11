@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: smart-attendance-system
+    env: python
+    repo: https://github.com/antonyathibana/FINAL-YEAR-PROJECT.git
+    branch: main
+    pythonVersion: "3.11"
+    buildCommand: |
+      pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: "3.11"
+    healthCheckPath: /
+    plan: free
+

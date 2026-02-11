@@ -29,12 +29,19 @@ import base64
 import warnings
 warnings.filterwarnings('ignore')
 
+import os
+
 app = Flask(__name__)
-app.secret_key = 'smart_attendance_system_secret_key'
+
+# Use environment variables with fallbacks
+app.secret_key = os.environ.get('SECRET_KEY', 'smart_attendance_system_secret_key')
 
 # Configuration
-DATABASE = 'attendance.db'
+DATABASE = os.environ.get('DATABASE_PATH', 'attendance.db')
 UPLOAD_FOLDER = 'static/student_images'
+
+# Render environment
+RENDER = os.environ.get('RENDER', False)
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # Load Haar Cascade for face detection
