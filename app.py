@@ -193,13 +193,31 @@ def register_student():
     """Student registration page"""
     message = None
     
+    # Check if JSON request (Content-Type header or is_json attribute)
+    content_type = request.headers.get('Content-Type', '')
+    is_json_request = request.is_json or 'application/json' in content_type
+    
     if request.method == 'POST':
-        student_id = request.form['student_id']
-        name = request.form['name']
-        department = request.form['department']
-        year = request.form['year']
-        section = request.form['section']
-        image_data = request.form.get('image_data')
+        # Check if JSON or Form data
+        if is_json_request:
+            # Handle JSON payload from new registration
+            data = request.json
+            student_id = data.get('student_id')
+            name = data.get('name')
+            department = data.get('department')
+            year = data.get('year')
+            section = data.get('section')
+            encoding = data.get('encoding')  # Array of 128 floats from face-api.js
+            image_data = data.get('image_data')  # Fallback to base64 image
+        else:
+            # Handle form data (legacy)
+            student_id = request.form['student_id']
+            name = request.form['name']
+            department = request.form['department']
+            year = request.form['year']
+            section = request.form['section']
+            image_data = request.form.get('image_data')
+            encoding = None
         
         conn = get_db_connection()
         
@@ -208,30 +226,42 @@ def register_student():
         
         if existing:
             message = {'type': 'error', 'text': 'Student with this ID already exists!'}
-        elif not image_data:
+        elif not encoding and not image_data:
             message = {'type': 'error', 'text': 'Please capture face image!'}
         else:
-            # Save image
-            image_path = f'student_images/{student_id}.jpg'
-            full_path = os.path.join('static', image_path)
+            # Save image if base64 data provided
+            image_path = None
+            if image_data:
+                image_path = f'student_images/{student_id}.jpg'
+                full_path = os.path.join('static', image_path)
+                try:
+                    header, encoded = image_data.split(',', 1)
+                    with open(full_path, 'wb') as f:
+                        f.write(base64.b64decode(encoded))
+                except Exception as e:
+                    print(f"Error saving image: {e}")
             
-            # Decode base64 image
-            header, encoded = image_data.split(',', 1)
-            with open(full_path, 'wb') as f:
-                f.write(base64.b64decode(encoded))
-            
-            # Create face encoding using OpenCV
-            image = cv2.imread(full_path)
-            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-            
-            # Store face encoding
+            # Store face encoding as JSON (from face-api.js)
             encoding_data = None
-            if len(faces) > 0:
-                x, y, w, h = faces[0]
-                face_roi = gray[y:y+h, x:x+w]
-                face_roi = cv2.resize(face_roi, (100, 100))
-                encoding_data = face_roi.tobytes()
+            if encoding:
+                import json
+                encoding_data = json.dumps(encoding)
+                print(f"✓ Stored face descriptor with {len(encoding)} values for {student_id}")
+            elif image_data:
+                # Fallback: Create encoding from image using OpenCV
+                try:
+                    full_path = os.path.join('static', image_path)
+                    image = cv2.imread(full_path)
+                    if image is not None:
+                        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                        faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+                        if len(faces) > 0:
+                            x, y, w, h = faces[0]
+                            face_roi = gray[y:y+h, x:x+w]
+                            face_roi = cv2.resize(face_roi, (100, 100))
+                            encoding_data = face_roi.tobytes()
+                except Exception as e:
+                    print(f"Error creating encoding: {e}")
             
             # Insert into database
             conn.execute('''
@@ -240,8 +270,13 @@ def register_student():
             ''', (student_id, name, department, year, section, image_path, encoding_data))
             conn.commit()
             message = {'type': 'success', 'text': f'Student {name} registered successfully!'}
+            print(f"✓ Student {student_id} ({name}) registered successfully")
         
         conn.close()
+        
+        # Return JSON for AJAX requests
+        if is_json_request:
+            return jsonify(message)
     
     return render_template('register.html', message=message)
 
@@ -684,11 +719,206 @@ def student_logout():
 @app.route('/api/students')
 @login_required
 def get_students():
-    """Get all students as JSON"""
+    """Get all students as JSON (without encoding data)"""
     conn = get_db_connection()
-    students = conn.execute('SELECT * FROM students ORDER BY name').fetchall()
+    students = conn.execute('SELECT id, student_id, name, department, year, section, image_path FROM students ORDER BY name').fetchall()
     conn.close()
     return jsonify([dict(row) for row in students])
+
+@app.route('/api/students/<student_id>', methods=['DELETE'])
+@login_required
+def delete_student(student_id):
+    """Delete a student and their attendance records"""
+    conn = get_db_connection()
+    
+    # Check if student exists
+    student = conn.execute('SELECT * FROM students WHERE student_id = ?', (student_id,)).fetchone()
+    
+    if not student:
+        conn.close()
+        return jsonify({'status': 'error', 'message': 'Student not found'})
+    
+    # Get image path for deletion
+    image_path = student['image_path']
+    
+    try:
+        # Delete attendance records first (foreign key constraint)
+        conn.execute('DELETE FROM attendance WHERE student_id = ?', (student_id,))
+        
+        # Delete student
+        conn.execute('DELETE FROM students WHERE student_id = ?', (student_id,))
+        conn.commit()
+        
+        # Delete image file if exists
+        if image_path:
+            full_path = os.path.join('static', image_path)
+            if os.path.exists(full_path):
+                os.remove(full_path)
+        
+        print(f"✓ Deleted student: {student_id} ({student['name']})")
+        conn.close()
+        return jsonify({'status': 'success', 'message': f'Student {student_id} deleted successfully'})
+    except Exception as e:
+        conn.close()
+        print(f"✗ Error deleting student {student_id}: {e}")
+        return jsonify({'status': 'error', 'message': str(e)})
+
+@app.route('/api/students/descriptors')
+@login_required
+def get_student_descriptors():
+    """Get student face descriptors for client-side recognition"""
+    conn = get_db_connection()
+    students = conn.execute('SELECT student_id, name, encoding_data FROM students').fetchall()
+    conn.close()
+    
+    descriptors = []
+    for student in students:
+        if not student['encoding_data']:
+            continue
+            
+        encoding = None
+        raw_data = student['encoding_data']
+        
+        # Try different formats
+        try:
+            import json
+            # Case 1: Already a JSON string
+            if isinstance(raw_data, str):
+                encoding = json.loads(raw_data)
+                print(f"✓ Parsed JSON string for {student['student_id']}")
+            else:
+                # Case 2: Try parsing as JSON from bytes
+                encoding = json.loads(raw_data.decode('utf-8'))
+                print(f"✓ Parsed JSON bytes for {student['student_id']}")
+        except Exception as e:
+            # Case 3: Try numpy array (old OpenCV format - 100x100 grayscale = 10000 values)
+            try:
+                import numpy as np
+                # Old format: 100x100 grayscale image as bytes
+                arr = np.frombuffer(raw_data, np.uint8)
+                if len(arr) == 10000:  # 100x100 pixels
+                    # Convert grayscale values to face-api.js compatible descriptor
+                    # We need 128 float values - extract normalized values from the image
+                    img = arr.reshape(100, 100)
+                    # Create a simple 128-d descriptor from the image
+                    encoding = img.flatten().astype(np.float64).tolist()[:128]
+                    if len(encoding) < 128:
+                        encoding.extend([0.0] * (128 - len(encoding)))
+                    print(f"✓ Converted OpenCV grayscale for {student['student_id']} ({len(encoding)} values)")
+                else:
+                    # Try as float64
+                    arr = np.frombuffer(raw_data, np.float64)
+                    encoding = arr.tolist()
+                    print(f"✓ Parsed float64 array for {student['student_id']} ({len(encoding)} values)")
+            except Exception as e2:
+                print(f"✗ Failed to parse encoding for {student['student_id']}: {e} {e2}")
+                continue
+        
+        if encoding and len(encoding) == 128:
+            descriptors.append({
+                'student_id': student['student_id'],
+                'name': student['name'],
+                'encoding': encoding
+            })
+            print(f"✓ Added descriptor for {student['name']}")
+        else:
+            print(f"✗ Invalid encoding length for {student['student_id']}: {len(encoding) if encoding else 'None'}")
+    
+    print(f"Total descriptors returned: {len(descriptors)}")
+    return jsonify(descriptors)
+
+@app.route('/api/students/descriptor', methods=['POST'])
+@login_required
+def save_student_descriptor():
+    """Save face descriptor for a student (from client-side extraction)"""
+    data = request.json
+    student_id = data.get('student_id')
+    descriptor = data.get('descriptor')  # Array of 128 floats
+    
+    if not student_id or not descriptor:
+        return jsonify({'status': 'error', 'message': 'Missing data'})
+    
+    import json
+    conn = get_db_connection()
+    
+    # Update student with new descriptor
+    conn.execute('UPDATE students SET encoding_data = ? WHERE student_id = ?',
+                (json.dumps(descriptor), student_id))
+    conn.commit()
+    conn.close()
+    
+    return jsonify({'status': 'success', 'message': 'Descriptor saved'})
+
+@app.route('/mark_attendance', methods=['POST'])
+@login_required
+def mark_attendance_api():
+    """Mark attendance from client-side recognition"""
+    try:
+        data = request.json
+        student_id = data.get('student_id')
+        
+        print(f"🔔 mark_attendance called for student_id: {student_id}")
+        
+        if not student_id:
+            return jsonify({'status': 'error', 'message': 'No student ID provided'})
+        
+        conn = get_db_connection()
+        
+        # Check if student exists
+        student = conn.execute('SELECT * FROM students WHERE student_id = ?',
+                              (student_id,)).fetchone()
+        
+        if not student:
+            conn.close()
+            print(f"❌ Student not found: {student_id}")
+            return jsonify({'status': 'error', 'message': 'Student not found'})
+        
+        today = date.today().strftime('%Y-%m-%d')
+        current_time = datetime.now().strftime('%H:%M:%S')
+        
+        print(f"📝 Attempting to mark attendance for: {student['name']} ({student_id})")
+        
+        # Check if already marked today
+        existing = conn.execute(
+            'SELECT * FROM attendance WHERE student_id = ? AND date = ?',
+            (student_id, today)
+        ).fetchone()
+        
+        if existing:
+            conn.close()
+            print(f"⚠️ Already marked today: {student['name']}")
+            return jsonify({
+                'status': 'already_marked',
+                'message': f'{student["name"]} is already marked present today',
+                'student': {
+                    'student_id': student['student_id'],
+                    'name': student['name'],
+                    'time': existing['time']
+                }
+            })
+        
+        # Mark attendance
+        conn.execute('''
+            INSERT INTO attendance (student_id, name, department, date, time, status)
+            VALUES (?, ?, ?, ?, ?, 'Present')
+        ''', (student_id, student['name'], student['department'], today, current_time))
+        conn.commit()
+        conn.close()
+        
+        print(f"✅ Successfully marked attendance for: {student['name']} at {current_time}")
+        
+        return jsonify({
+            'status': 'success',
+            'message': f'Attendance marked for {student["name"]}',
+            'student': {
+                'student_id': student['student_id'],
+                'name': student['name'],
+                'time': current_time
+            }
+        })
+    except Exception as e:
+        print(f"❌ Error in mark_attendance: {e}")
+        return jsonify({'status': 'error', 'message': str(e)})
 
 @app.route('/api/attendance_today')
 @login_required

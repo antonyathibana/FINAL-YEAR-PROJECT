@@ -6,432 +6,10 @@
     <title>Take Attendance - Smart Attendance System</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-        
-        .page-container {
-            display: flex;
-            min-height: 100vh;
-        }
-        
-        /* Sidebar */
-        .sidebar {
-            width: 260px;
-            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
-            color: white;
-            padding: 20px 0;
-            position: fixed;
-            height: 100vh;
-        }
-        
-        .sidebar-header {
-            text-align: center;
-            padding: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 20px;
-        }
-        
-        .sidebar-header h2 {
-            font-size: 22px;
-            font-weight: 600;
-        }
-        
-        .sidebar-header p {
-            font-size: 12px;
-            opacity: 0.7;
-        }
-        
-        .nav-menu {
-            list-style: none;
-        }
-        
-        .nav-item {
-            margin: 5px 15px;
-        }
-        
-        .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 14px 20px;
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-        
-        .nav-link:hover, .nav-link.active {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-        }
-        
-        .nav-link.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        
-        .nav-link i {
-            margin-right: 12px;
-            width: 20px;
-        }
-        
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            margin-left: 260px;
-            padding: 30px;
-            background: #f5f7fa;
-        }
-        
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-        
-        .header h1 {
-            font-size: 28px;
-            color: #333;
-        }
-        
-        .back-btn {
-            padding: 10px 20px;
-            background: #6c757d;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        
-        .back-btn:hover {
-            background: #5a6268;
-        }
-        
-        /* Content Grid */
-        .content-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 30px;
-        }
-        
-        /* Camera Card */
-        .camera-card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-        }
-        
-        .camera-card h2 {
-            font-size: 20px;
-            color: #333;
-            margin-bottom: 20px;
-        }
-        
-        .video-container {
-            position: relative;
-            background: #000;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-        
-        #videoFeed {
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-            border-radius: 10px;
-            display: none;
-        }
-        
-        #noVideoMessage {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-size: 18px;
-            text-align: center;
-            z-index: 10;
-        }
-        
-        #noVideoMessage i {
-            font-size: 48px;
-            margin-bottom: 15px;
-        }
-        
-        .camera-controls {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .btn {
-            padding: 14px 28px;
-            border: none;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        
-        .btn-success {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            color: white;
-        }
-        
-        .btn-danger {
-            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
-            color: white;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        /* Stats Sidebar */
-        .stats-sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
-        .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            text-align: center;
-        }
-        
-        .stat-card h3 {
-            font-size: 36px;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-        
-        .stat-card p {
-            font-size: 14px;
-            color: #888;
-        }
-        
-        .stat-card.total {
-            border-top: 4px solid #667eea;
-        }
-        
-        .stat-card.total h3 {
-            color: #667eea;
-        }
-        
-        .stat-card.present {
-            border-top: 4px solid #11998e;
-        }
-        
-        .stat-card.present h3 {
-            color: #11998e;
-        }
-        
-        .stat-card.absent {
-            border-top: 4px solid #eb3349;
-        }
-        
-        .stat-card.absent h3 {
-            color: #eb3349;
-        }
-        
-        .stat-card.rate {
-            border-top: 4px solid #f093fb;
-        }
-        
-        .stat-card.rate h3 {
-            color: #f093fb;
-        }
-        
-        /* Attendance List */
-        .attendance-list {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        
-        .attendance-list h3 {
-            font-size: 18px;
-            color: #333;
-            margin-bottom: 15px;
-            position: sticky;
-            top: 0;
-            background: white;
-            padding-bottom: 10px;
-        }
-        
-        .attendance-item {
-            display: flex;
-            align-items: center;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            background: #f8f9fa;
-            animation: slideIn 0.3s ease;
-        }
-        
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        
-        .attendance-item .avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            margin-right: 15px;
-        }
-        
-        .attendance-item .info {
-            flex: 1;
-        }
-        
-        .attendance-item .name {
-            font-weight: 600;
-            color: #333;
-        }
-        
-        .attendance-item .id {
-            font-size: 12px;
-            color: #888;
-        }
-        
-        .attendance-item .time {
-            font-size: 14px;
-            color: #11998e;
-            font-weight: 500;
-        }
-        
-        .no-records {
-            text-align: center;
-            padding: 30px;
-            color: #888;
-        }
-        
-        .no-records i {
-            font-size: 40px;
-            margin-bottom: 10px;
-            opacity: 0.5;
-        }
-        
-        /* Legend */
-        .legend {
-            display: flex;
-            gap: 15px;
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
-            color: #666;
-        }
-        
-        .legend-color {
-            width: 15px;
-            height: 15px;
-            border-radius: 3px;
-        }
-        
-        .legend-color.green {
-            background: #0f0;
-        }
-        
-        .legend-color.yellow {
-            background: #ff0;
-        }
-        
-        .legend-color.red {
-            background: #f00;
-        }
-        
-        .legend-color.blue {
-            background: #00f;
-        }
-        
-        /* Responsive */
-        @media (max-width: 1100px) {
-            .content-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .stats-sidebar {
-                flex-direction: row;
-                flex-wrap: wrap;
-            }
-            
-            .stat-card {
-                flex: 1;
-                min-width: 150px;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-            }
-            
-            .main-content {
-                margin-left: 0;
-            }
-            
-            .page-container {
-                flex-direction: column;
-            }
-            
-            .camera-controls {
-                flex-direction: column;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/shared.css') }}">
 </head>
 <body>
-    <div class="page-container">
+    <div class="dashboard-container">
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
@@ -480,205 +58,428 @@
         
         <!-- Main Content -->
         <main class="main-content">
-            <div class="header">
+            <div class="page-header">
                 <h1>📸 Take Attendance</h1>
-                <a href="/dashboard" class="back-btn">
-                    <i class="fas fa-arrow-left"></i> Back
-                </a>
+                <p>Start the camera to automatically detect and mark student attendance</p>
             </div>
             
-            <div class="content-grid">
-                <!-- Camera Section -->
-                <div class="camera-card">
-                    <h2>🎥 Live Camera Feed</h2>
-                    <div class="video-container">
-                        <img id="videoFeed" src="" alt="Video Feed">
-                        <div id="noVideoMessage">
-                            <i class="fas fa-video-slash"></i>
-                            <p>Camera is off</p>
-                            <p style="font-size: 14px; margin-top: 10px;">Click "Start Camera" to begin</p>
-                        </div>
-                    </div>
-                    <div class="camera-controls">
-                        <button id="startBtn" class="btn btn-success" onclick="startCamera()">
-                            <i class="fas fa-play"></i> Start Camera
-                        </button>
-                        <button id="stopBtn" class="btn btn-danger" onclick="stopCamera()" disabled>
-                            <i class="fas fa-stop"></i> Stop Camera
-                        </button>
-                    </div>
-                    <div class="legend">
-                        <div class="legend-item">
-                            <div class="legend-color green"></div>
-                            <span>Recognized</span>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-color yellow"></div>
-                            <span>Already Marked</span>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-color red"></div>
-                            <span>Unknown</span>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-color blue"></div>
-                            <span>Face Detected</span>
-                        </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Camera Feed</h3>
+                    <div style="display: flex; gap: 20px;">
+                        <span>
+                            <span id="modelStatus" class="status-dot" style="width: 12px; height: 12px; border-radius: 50%; background: #ffc107; display: inline-block;"></span>
+                            <span id="modelStatusText">Loading models...</span>
+                        </span>
+                        <span>
+                            <span id="cameraStatus" class="status-dot" style="width: 12px; height: 12px; border-radius: 50%; background: #dee2e6; display: inline-block;"></span>
+                            <span id="cameraStatusText">Camera not started</span>
+                        </span>
                     </div>
                 </div>
                 
-                <!-- Stats & List -->
-                <div class="stats-sidebar">
-                    <div class="stat-card total">
+                <div class="video-container" style="height: 400px;">
+                    <video id="videoFeed" autoplay muted></video>
+                    <canvas id="overlay" style="position: absolute; top: 0; left: 0;"></canvas>
+                    <div class="video-overlay">
+                        <i class="fas fa-video"></i> Face Recognition Active
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
+                    <button id="startBtn" class="btn btn-success" disabled>
+                        <i class="fas fa-video"></i> Start Camera
+                    </button>
+                    <button id="stopBtn" class="btn btn-danger" disabled>
+                        <i class="fas fa-stop"></i> Stop Camera
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Attendance Stats -->
+            <div class="stats-container" style="margin-top: 30px;">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
                         <h3 id="totalStudents">0</h3>
                         <p>Total Students</p>
                     </div>
-                    <div class="stat-card present">
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
                         <h3 id="presentCount">0</h3>
                         <p>Present Today</p>
                     </div>
-                    <div class="stat-card absent">
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon red">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div class="stat-info">
                         <h3 id="absentCount">0</h3>
                         <p>Absent Today</p>
                     </div>
-                    <div class="stat-card rate">
-                        <h3 id="attendanceRate">0%</h3>
-                        <p>Attendance Rate</p>
-                    </div>
-                    
-                    <div class="attendance-list">
-                        <h3>📋 Today's Attendance</h3>
-                        <div id="attendanceList">
-                            <div class="no-records">
-                                <i class="fas fa-clipboard-list"></i>
-                                <p>No attendance recorded yet</p>
-                            </div>
-                        </div>
+                </div>
+            </div>
+            
+            <!-- Recently Marked -->
+            <div class="card" style="margin-top: 20px;">
+                <div class="card-header">
+                    <h3 class="card-title">Recently Marked</h3>
+                </div>
+                <div class="attendance-list" id="attendanceList">
+                    <div class="empty-state">
+                        <i class="fas fa-clock"></i>
+                        <h3>No attendance marked yet</h3>
+                        <p>Start the camera to begin marking attendance</p>
                     </div>
                 </div>
             </div>
         </main>
     </div>
     
+    <!-- Toast container -->
+    <div id="toastContainer"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+    
     <script>
-        let cameraStream = null;
-        let refreshInterval = null;
+        let video = document.getElementById("videoFeed");
+        let canvas = document.getElementById("overlay");
+        let ctx = canvas.getContext("2d");
+        let stream = null;
+        let recognitionInterval = null;
         
-        // Start Camera - Uses Flask video feed with face recognition
-        async function startCamera() {
+        let faceMatcher = null;
+        const RECOGNITION_THRESHOLD = 0.6;
+        const MARK_COOLDOWN = 3000;
+        const lastMarkedTimes = {};
+        let markedStudents = new Set();
+        
+        /* ---------- STATUS ---------- */
+        function updateStatus(type, color, text) {
+            const statusEl = document.getElementById(type + "Status");
+            statusEl.style.background = color;
+            document.getElementById(type + "StatusText").innerText = text;
+        }
+        
+        /* ---------- TOAST POPUP ---------- */
+        function showPopup(title, msg, type = "success") {
+            const toast = document.createElement("div");
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `<strong>${title}</strong><br><small>${msg}</small>`;
+            toast.style.position = "fixed";
+            toast.style.top = "20px";
+            toast.style.right = "20px";
+            toast.style.bottom = "auto";
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.classList.add("show"), 50);
+            setTimeout(() => {
+                toast.classList.remove("show");
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+        
+        /* ---------- LOAD MODELS ---------- */
+        async function loadModels() {
             try {
-                // Start camera on server side
-                const response = await fetch('/start_camera', { method: 'POST' });
-                const data = await response.json();
+                const URL = "https://justadudewhohacks.github.io/face-api.js/models";
+                await Promise.all([
+                    faceapi.nets.tinyFaceDetector.loadFromUri(URL),
+                    faceapi.nets.faceLandmark68Net.loadFromUri(URL),
+                    faceapi.nets.faceRecognitionNet.loadFromUri(URL)
+                ]);
+                updateStatus("model", "#28a745", "Models loaded");
+                // Enable start button after models load
+                document.getElementById("startBtn").disabled = false;
+                loadStudentDescriptors();
+            } catch (e) {
+                updateStatus("model", "#dc3545", "Model error: " + e.message);
+                showPopup("Error", "Failed to load face detection models: " + e.message, "error");
+            }
+        }
+        
+        /* ---------- LOAD STUDENTS ---------- */
+        async function loadStudentDescriptors() {
+            try {
+                const res = await fetch("/api/students/descriptors");
+                const students = await res.json();
                 
-                if (data.status === 'success') {
-                    // Show the Flask video feed with face recognition
-                    const videoFeed = document.getElementById('videoFeed');
-                    videoFeed.src = '/video_feed';
-                    videoFeed.style.display = 'block';
-                    document.getElementById('noVideoMessage').style.display = 'none';
-                    
-                    document.getElementById('startBtn').disabled = true;
-                    document.getElementById('stopBtn').disabled = false;
-                    
-                    // Start refreshing stats
-                    loadStats();
-                    refreshInterval = setInterval(loadStats, 2000);
+                console.log("Loaded students:", students.length);
+                
+                if (students.length === 0) {
+                    console.warn("No students registered yet!");
+                    updateStatus("model", "#ffc709", "Models loaded - No students registered");
+                    document.getElementById("totalStudents").textContent = 0;
+                    loadTodayAttendance();
+                    return;
                 }
                 
-            } catch (err) {
-                alert('Error starting camera: ' + err.message);
-                console.error(err);
+                const labeled = [];
+                
+                for (const s of students) {
+                    if (s.encoding && s.encoding.length === 128) {
+                        try {
+                            labeled.push(
+                                new faceapi.LabeledFaceDescriptors(
+                                    s.student_id + "|" + s.name,
+                                    [new Float32Array(s.encoding)]
+                                )
+                            );
+                        } catch (e) {
+                            console.error("Error creating descriptor for", s.name, e);
+                        }
+                    }
+                }
+                
+                if (labeled.length === 0) {
+                    console.warn("No valid face descriptors found!");
+                    updateStatus("model", "#ffc709", "Models loaded - Invalid descriptors");
+                } else {
+                    faceMatcher = new faceapi.FaceMatcher(labeled, RECOGNITION_THRESHOLD);
+                    console.log("Face matcher initialized with", labeled.length, "students");
+                }
+                
+                document.getElementById("totalStudents").textContent = students.length;
+                loadTodayAttendance();
+            } catch (e) {
+                console.error("Error loading students:", e);
+                document.getElementById("totalStudents").textContent = "Error";
             }
         }
         
-        // Stop Camera
-        async function stopCamera() {
+        /* ---------- LOAD TODAY'S ATTENDANCE ---------- */
+        async function loadTodayAttendance() {
             try {
-                await fetch('/stop_camera', { method: 'POST' });
-            } catch (err) {
-                console.error('Error stopping camera on server:', err);
-            }
-            
-            // Stop local stream if any
-            if (cameraStream) {
-                cameraStream.getTracks().forEach(track => track.stop());
-                cameraStream = null;
-            }
-            
-            const videoFeed = document.getElementById('videoFeed');
-            videoFeed.src = '';
-            videoFeed.style.display = 'none';
-            document.getElementById('noVideoMessage').style.display = 'block';
-            
-            document.getElementById('startBtn').disabled = false;
-            document.getElementById('stopBtn').disabled = true;
-            
-            // Stop refreshing
-            if (refreshInterval) {
-                clearInterval(refreshInterval);
-                refreshInterval = null;
+                const res = await fetch("/api/attendance_today");
+                const data = await res.json();
+                document.getElementById("presentCount").textContent = data.present;
+                document.getElementById("absentCount").textContent = data.absent;
+                
+                // Update marked students set
+                const listRes = await fetch("/get_attendance_status");
+                const listData = await listRes.json();
+                listData.students.forEach(s => markedStudents.add(s.student_id));
+                updateAttendanceList(listData.students);
+            } catch (e) {
+                console.error("Error loading attendance:", e);
             }
         }
         
-        // Load statistics
-        async function loadStats() {
+        /* ---------- CAMERA ---------- */
+        document.getElementById("startBtn").onclick = async () => {
             try {
-                const response = await fetch('/get_attendance_status');
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: { ideal: 640 },
+                        height: { ideal: 480 },
+                        facingMode: "user"
+                    } 
+                });
+                video.srcObject = stream;
+                
+                video.onloadedmetadata = () => {
+                    // Set canvas to match video dimensions
+                    canvas.width = video.videoWidth || 640;
+                    canvas.height = video.videoHeight || 480;
+                    updateStatus("camera", "#28a745", "Camera active");
+                    // Start recognition every 500ms
+                    recognitionInterval = setInterval(recognizeFaces, 500);
+                };
+                
+                video.onerror = (e) => {
+                    console.error("Video error:", e);
+                    updateStatus("camera", "#dc3545", "Camera error");
+                    showPopup("Error", "Video stream error", "error");
+                };
+                
+                document.getElementById("startBtn").disabled = true;
+                document.getElementById("stopBtn").disabled = false;
+            } catch (e) {
+                console.error("Camera access error:", e);
+                updateStatus("camera", "#dc3545", "Camera denied");
+                showPopup("Camera Error", "Could not access camera: " + e.message, "error");
+            }
+        };
+        
+        document.getElementById("stopBtn").onclick = () => {
+            clearInterval(recognitionInterval);
+            if (stream) {
+                stream.getTracks().forEach(t => t.stop());
+            }
+            updateStatus("camera", "#dee2e6", "Camera stopped");
+            document.getElementById("startBtn").disabled = false;
+            document.getElementById("stopBtn").disabled = true;
+        };
+        
+        /* ---------- FACE RECOGNITION ---------- */
+        async function recognizeFaces() {
+            if (!faceMatcher) {
+                // Don't warn too often
+                return;
+            }
+            
+            // Skip if video not ready
+            if (!video.srcObject || video.readyState !== 4) {
+                return;
+            }
+            
+            try {
+                const detections = await faceapi
+                    .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
+                    .withFaceLandmarks()
+                    .withFaceDescriptors();
+                
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                if (detections.length === 0) {
+                    // No faces detected - draw waiting message
+                    ctx.fillStyle = "#6c757d";
+                    ctx.font = "20px Poppins";
+                    ctx.fillText("Looking for faces...", canvas.width/2 - 80, canvas.height/2);
+                    return;
+                }
+                
+                detections.forEach(d => {
+                    const match = faceMatcher.findBestMatch(d.descriptor);
+                    const box = d.detection.box;
+                    const confidence = d.detection.confidence;
+                    
+                    let label = "Unknown";
+                    let color = "#dc3545";
+                    
+                    console.log("Face detected, match:", match.label, "confidence:", match.distance);
+                    
+                    if (match.label !== "unknown" && match.distance < 0.6) {
+                        const [id, name] = match.label.split("|");
+                        label = name;
+                        color = "#28a745";
+                        
+                        const now = Date.now();
+                        const lastMarked = lastMarkedTimes[id] || 0;
+                        
+                        console.log("Recognized:", name, "id:", id, "cooldown:", MARK_COOLDOWN - (now - lastMarked), "ms");
+                        
+                        if (!lastMarkedTimes[id] || now - lastMarkedTimes[id] > MARK_COOLDOWN) {
+                            lastMarkedTimes[id] = now;
+                            if (!markedStudents.has(id)) {
+                                markedStudents.add(id);
+                                console.log("Calling markAttendance for:", id, name);
+                                markAttendance(id, name);
+                            }
+                        }
+                    }
+                    
+                    // Draw bounding box
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 3;
+                    ctx.strokeRect(box.x, box.y, box.width, box.height);
+                    ctx.fillStyle = color;
+                    ctx.font = "bold 14px Poppins";
+                    ctx.fillText(label + ` (${(match.distance * 100).toFixed(0)}%)`, box.x, box.y - 8);
+                });
+            } catch (e) {
+                console.error("Recognition error:", e);
+            }
+        }
+        
+        /* ---------- MARK ATTENDANCE ---------- */
+        async function markAttendance(id, name) {
+            console.log("markAttendance called with id:", id, "name:", name);
+            
+            try {
+                const response = await fetch("/mark_attendance", {
+                    method: "POST",
+                    headers: { 
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ student_id: id })
+                });
+                
+                console.log("markAttendance response status:", response.status);
+                
                 const data = await response.json();
+                console.log("markAttendance response data:", data);
                 
-                const totalStudents = data.total_students || 0;
-                const presentCount = data.present_count || 0;
-                const absentCount = totalStudents - presentCount;
-                const rate = totalStudents > 0 ? Math.round((presentCount / totalStudents) * 100) : 0;
-                
-                document.getElementById('totalStudents').textContent = totalStudents;
-                document.getElementById('presentCount').textContent = presentCount;
-                document.getElementById('absentCount').textContent = absentCount >= 0 ? absentCount : 0;
-                document.getElementById('attendanceRate').textContent = rate + '%';
-                
-                updateAttendanceList(data.students || []);
-                
-            } catch (err) {
-                console.error('Error loading stats:', err);
+                if (data.status === "success") {
+                    console.log("✅ Attendance successfully marked for:", name);
+                    showPopup("✅ Attendance Marked", name + " at " + data.student.time, "success");
+                    document.getElementById("presentCount").textContent = parseInt(document.getElementById("presentCount").textContent) + 1;
+                    document.getElementById("absentCount").textContent = parseInt(document.getElementById("absentCount").textContent) - 1;
+                    
+                    // Add to list
+                    addToAttendanceList(name, data.student.time);
+                } else if (data.status === "already_marked") {
+                    console.log("ℹ️ Already marked for:", name);
+                    showPopup("ℹ️ Already Marked", name + " was already marked today", "info");
+                } else {
+                    console.error("❌ Attendance error:", data.message);
+                    showPopup("❌ Error", data.message || "Failed to mark attendance", "error");
+                }
+            } catch (e) {
+                console.error("❌ markAttendance exception:", e);
+                showPopup("❌ Error", "Network error: " + e.message, "error");
             }
         }
         
-        // Update attendance list
+        /* ---------- UPDATE ATTENDANCE LIST ---------- */
+        function addToAttendanceList(name, time) {
+            const list = document.getElementById("attendanceList");
+            const emptyState = list.querySelector(".empty-state");
+            if (emptyState) {
+                emptyState.remove();
+            }
+            
+            const item = document.createElement("div");
+            item.className = "attendance-item";
+            item.innerHTML = `
+                <div class="avatar">${name.charAt(0)}</div>
+                <div class="info">
+                    <div class="name">${name}</div>
+                    <div class="time">${time}</div>
+                </div>
+                <span class="badge badge-success">Present</span>
+            `;
+            
+            list.insertBefore(item, list.firstChild);
+            
+            // Keep only last 10 items
+            while (list.children.length > 10) {
+                list.removeChild(list.lastChild);
+            }
+        }
+        
         function updateAttendanceList(students) {
-            const list = document.getElementById('attendanceList');
+            const list = document.getElementById("attendanceList");
+            list.innerHTML = "";
             
             if (students.length === 0) {
                 list.innerHTML = `
-                    <div class="no-records">
-                        <i class="fas fa-clipboard-list"></i>
-                        <p>No attendance recorded yet</p>
+                    <div class="empty-state">
+                        <i class="fas fa-clock"></i>
+                        <h3>No attendance marked yet</h3>
+                        <p>Start the camera to begin marking attendance</p>
                     </div>
                 `;
                 return;
             }
             
-            let html = '';
-            students.forEach(student => {
-                const initials = student.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-                html += `
-                    <div class="attendance-item">
-                        <div class="avatar">${initials}</div>
-                        <div class="info">
-                            <div class="name">${student.name}</div>
-                            <div class="id">${student.student_id}</div>
-                        </div>
-                        <div class="time">${student.time}</div>
-                    </div>
-                `;
+            students.forEach(s => {
+                addToAttendanceList(s.name, s.time);
             });
-            
-            list.innerHTML = html;
         }
         
-        // Initial load
-        document.addEventListener('DOMContentLoaded', loadStats);
+        /* ---------- INIT ---------- */
+        loadModels();
     </script>
 </body>
 </html>
-

@@ -6,282 +6,10 @@
     <title>Register Student - Smart Attendance System</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-        
-        .page-container {
-            display: flex;
-            min-height: 100vh;
-        }
-        
-        /* Sidebar */
-        .sidebar {
-            width: 260px;
-            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
-            color: white;
-            padding: 20px 0;
-            position: fixed;
-            height: 100vh;
-        }
-        
-        .sidebar-header {
-            text-align: center;
-            padding: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 20px;
-        }
-        
-        .sidebar-header h2 {
-            font-size: 22px;
-            font-weight: 600;
-        }
-        
-        .sidebar-header p {
-            font-size: 12px;
-            opacity: 0.7;
-        }
-        
-        .nav-menu {
-            list-style: none;
-        }
-        
-        .nav-item {
-            margin: 5px 15px;
-        }
-        
-        .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 14px 20px;
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-        
-        .nav-link:hover, .nav-link.active {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-        }
-        
-        .nav-link.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        
-        .nav-link i {
-            margin-right: 12px;
-            width: 20px;
-        }
-        
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            margin-left: 260px;
-            padding: 30px;
-            background: #f5f7fa;
-        }
-        
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-        
-        .header h1 {
-            font-size: 28px;
-            color: #333;
-        }
-        
-        .back-btn {
-            padding: 10px 20px;
-            background: #6c757d;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        
-        .back-btn:hover {
-            background: #5a6268;
-        }
-        
-        /* Form Container */
-        .form-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-        
-        .form-card {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-        }
-        
-        .form-card h2 {
-            font-size: 20px;
-            color: #333;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 500;
-        }
-        
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 15px;
-            transition: all 0.3s ease;
-        }
-        
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        
-        .row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        
-        /* Camera Section */
-        .camera-container {
-            text-align: center;
-        }
-        
-        #videoElement {
-            width: 100%;
-            max-width: 400px;
-            height: 300px;
-            background: #000;
-            border-radius: 10px;
-            object-fit: cover;
-        }
-        
-        #canvasElement {
-            display: none;
-        }
-        
-        .camera-buttons {
-            margin-top: 20px;
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        
-        .btn-success {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            color: white;
-        }
-        
-        .btn-danger {
-            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
-            color: white;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        #capturedImage {
-            width: 100%;
-            max-width: 400px;
-            height: 300px;
-            object-fit: cover;
-            border-radius: 10px;
-            margin-top: 15px;
-            display: none;
-        }
-        
-        .status-message {
-            margin-top: 15px;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-        
-        .status-message.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .status-message.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        
-        .captured-count {
-            font-size: 14px;
-            color: #666;
-            margin-top: 10px;
-        }
-        
-        /* Responsive */
-        @media (max-width: 900px) {
-            .form-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-            }
-            
-            .main-content {
-                margin-left: 0;
-            }
-            
-            .page-container {
-                flex-direction: column;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/shared.css') }}">
 </head>
 <body>
-    <div class="page-container">
+    <div class="dashboard-container">
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
@@ -330,193 +58,411 @@
         
         <!-- Main Content -->
         <main class="main-content">
-            <div class="header">
-                <h1>👤 Register New Student</h1>
-                <a href="/dashboard" class="back-btn">
-                    <i class="fas fa-arrow-left"></i> Back
-                </a>
+            <div class="page-header">
+                <h1>📝 Register New Student</h1>
+                <p>Capture student face for attendance recognition</p>
             </div>
             
-            <div class="form-container">
-                <!-- Student Details Form -->
-                <div class="form-card">
-                    <h2>📝 Student Information</h2>
-                    <form id="registrationForm" method="POST">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:30px">
+                <!-- ================= FORM ================= -->
+                <div class="card">
+                    <h3 style="margin-bottom: 20px;">Student Information</h3>
+                    
+                    {% if message %}
+                    <div class="{{ 'success-message' if message.type == 'success' else 'error-message' }}">
+                        {{ message.text }}
+                    </div>
+                    {% endif %}
+                    
+                    <form id="registrationForm">
                         <div class="form-group">
-                            <label for="student_id">Student ID *</label>
-                            <input type="text" id="student_id" name="student_id" placeholder="Enter student ID" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="name">Full Name *</label>
-                            <input type="text" id="name" name="name" placeholder="Enter full name" required>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="form-group">
-                                <label for="department">Department *</label>
-                                <select id="department" name="department" required>
-                                    <option value="">Select Department</option>
-                                    <option value="CSE">Computer Science Engineering</option>
-                                    <option value="ECE">Electronics & Communication</option>
-                                    <option value="EE">Electrical Engineering</option>
-                                    <option value="ME">Mechanical Engineering</option>
-                                    <option value="CE">Civil Engineering</option>
-                                    <option value="IT">Information Technology</option>
-                                    <option value="AI">Artificial Intelligence</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="year">Year *</label>
-                                <select id="year" name="year" required>
-                                    <option value="">Select Year</option>
-                                    <option value="1st Year">1st Year</option>
-                                    <option value="2nd Year">2nd Year</option>
-                                    <option value="3rd Year">3rd Year</option>
-                                    <option value="4th Year">4th Year</option>
-                                </select>
-                            </div>
+                            <label for="student_id">Student ID</label>
+                            <input type="text" id="student_id" class="form-control" placeholder="Enter student ID" required>
                         </div>
                         
                         <div class="form-group">
-                            <label for="section">Section *</label>
-                            <input type="text" id="section" name="section" placeholder="e.g., A, B, C" required>
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" class="form-control" placeholder="Enter full name" required>
                         </div>
                         
-                        <input type="hidden" id="image_data" name="image_data">
-                        
-                        {% if message %}
-                        <div class="status-message {{ message.type }}">
-                            {{ message.text }}
+                        <div class="form-group">
+                            <label for="department">Department</label>
+                            <select id="department" class="form-control" required>
+                                <option value="">Select Department</option>
+                                <option>CSE</option>
+                                <option>ECE</option>
+                                <option>IT</option>
+                                <option>MECH</option>
+                                <option>CIVIL</option>
+                            </select>
                         </div>
-                        {% endif %}
                         
-                        <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        <div class="form-group">
+                            <label for="year">Year</label>
+                            <select id="year" class="form-control" required>
+                                <option value="">Select Year</option>
+                                <option>1st Year</option>
+                                <option>2nd Year</option>
+                                <option>3rd Year</option>
+                                <option>4th Year</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="section">Section</label>
+                            <input type="text" id="section" class="form-control" placeholder="Enter section" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
                             <i class="fas fa-save"></i> Save Student
                         </button>
                     </form>
                 </div>
                 
-                <!-- Camera Capture Section -->
-                <div class="form-card camera-container">
-                    <h2>📸 Face Capture</h2>
+                <!-- ================= CAMERA ================= -->
+                <div class="card" style="text-align: center;">
+                    <h3 style="margin-bottom: 20px;">Face Capture</h3>
                     
-                    <video id="videoElement" autoplay playsinline></video>
-                    <canvas id="canvasElement"></canvas>
-                    <img id="capturedImage" alt="Captured Face">
+                    <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 20px;">
+                        <span id="modelDot" class="status-dot" style="width: 12px; height: 12px; border-radius: 50%; background: #ffc107;"></span>
+                        <span id="modelText">Loading models...</span>
+                    </div>
                     
-                    <p class="captured-count" id="captureStatus">Position your face in front of the camera</p>
+                    <div class="video-container" style="max-width: 400px; margin: 0 auto 20px;">
+                        <video id="video" autoplay muted></video>
+                        <canvas id="canvas" style="display: none;"></canvas>
+                        <img id="preview" style="display: none;">
+                    </div>
                     
-                    <div class="camera-buttons">
-                        <button type="button" class="btn btn-success" id="startCameraBtn">
+                    <p id="statusText" style="margin-bottom: 20px; color: var(--text-secondary);">Load models first...</p>
+                    
+                    <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                        <button id="startBtn" class="btn btn-success" disabled>
                             <i class="fas fa-video"></i> Start Camera
                         </button>
-                        <button type="button" class="btn btn-primary" id="captureBtn" style="display: none;">
-                            <i class="fas fa-camera"></i> Capture
+                        <button id="captureBtn" class="btn btn-primary" style="display: none;">
+                            <i class="fas fa-camera"></i> Capture Face
                         </button>
-                        <button type="button" class="btn btn-danger" id="recaptureBtn" style="display: none;">
+                        <button id="retakeBtn" class="btn btn-danger" style="display: none;">
                             <i class="fas fa-redo"></i> Retake
                         </button>
                     </div>
                 </div>
             </div>
+            
+            <!-- ================= MANAGE STUDENTS ================= -->
+            <div class="card" style="margin-top: 30px;">
+                <h3 style="margin-bottom: 20px;">
+                    <i class="fas fa-users"></i> Manage Students
+                    <button class="btn btn-sm btn-secondary" onclick="loadStudents()" style="float: right;">
+                        <i class="fas fa-sync"></i> Refresh
+                    </button>
+                </h3>
+                
+                <div style="max-height: 300px; overflow-y: auto;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Name</th>
+                                <th>Department</th>
+                                <th>Year</th>
+                                <th>Section</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsList">
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 30px;">
+                                    <i class="fas fa-spinner fa-spin"></i> Loading students...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </main>
     </div>
     
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirm Delete</h3>
+                <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+            </div>
+            <p>Are you sure you want to delete this student?</p>
+            <p id="deleteStudentName" style="font-weight: bold; color: var(--danger);"></p>
+            <p style="color: var(--text-secondary); font-size: 14px;">
+                <i class="fas fa-exclamation-triangle"></i> 
+                This will also delete all attendance records for this student!
+            </p>
+            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                <button class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                <button class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+    
     <script>
-        const video = document.getElementById('videoElement');
-        const canvas = document.getElementById('canvasElement');
-        const capturedImage = document.getElementById('capturedImage');
-        const imageDataInput = document.getElementById('image_data');
-        const startCameraBtn = document.getElementById('startCameraBtn');
-        const captureBtn = document.getElementById('captureBtn');
-        const recaptureBtn = document.getElementById('recaptureBtn');
-        const captureStatus = document.getElementById('captureStatus');
+        const video = document.getElementById("video");
+        const canvas = document.getElementById("canvas");
+        const preview = document.getElementById("preview");
+        
+        const startBtn = document.getElementById("startBtn");
+        const captureBtn = document.getElementById("captureBtn");
+        const retakeBtn = document.getElementById("retakeBtn");
+        
+        const modelDot = document.getElementById("modelDot");
+        const modelText = document.getElementById("modelText");
+        const statusText = document.getElementById("statusText");
         
         let stream = null;
-        let isCaptured = false;
+        let faceDescriptor = null;
+        let modelsLoaded = false;
         
-        // Start Camera
-        startCameraBtn.addEventListener('click', async function() {
+        /* ---------- LOAD MODELS ---------- */
+        async function loadModels() {
             try {
-                stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { 
-                        facingMode: 'user',
-                        width: { ideal: 640 },
-                        height: { ideal: 480 }
-                    } 
-                });
-                video.srcObject = stream;
-                startCameraBtn.style.display = 'none';
-                captureBtn.style.display = 'inline-block';
-                video.style.display = 'block';
-                capturedImage.style.display = 'none';
-                captureStatus.textContent = 'Camera started. Click "Capture" to save face.';
-                isCaptured = false;
-            } catch (err) {
-                alert('Error accessing camera: ' + err.message);
-                console.error(err);
+                const URL = "https://justadudewhohacks.github.io/face-api.js/models";
+                await Promise.all([
+                    faceapi.nets.tinyFaceDetector.loadFromUri(URL),
+                    faceapi.nets.faceLandmark68Net.loadFromUri(URL),
+                    faceapi.nets.faceRecognitionNet.loadFromUri(URL)
+                ]);
+                modelsLoaded = true;
+                modelDot.style.background = "#28a745";
+                modelText.innerText = "Models loaded";
+                startBtn.disabled = false;
+                statusText.innerText = "Click Start Camera";
+            } catch (e) {
+                modelDot.style.background = "#dc3545";
+                modelText.innerText = "Model error";
+                showToast("Failed to load face detection models", "error");
             }
-        });
+        }
         
-        // Capture Photo
-        captureBtn.addEventListener('click', function() {
+        /* ---------- CAMERA ---------- */
+        startBtn.onclick = async () => {
+            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            video.srcObject = stream;
+            startBtn.style.display = "none";
+            captureBtn.style.display = "inline-flex";
+            statusText.innerText = "Position face & capture";
+        };
+        
+        /* ---------- CAPTURE ---------- */
+        captureBtn.onclick = async () => {
+            const detections = await faceapi
+                .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
+                .withFaceLandmarks()
+                .withFaceDescriptors();
+            
+            if (detections.length !== 1) {
+                showToast("Ensure exactly ONE face is visible", "warning");
+                return;
+            }
+            
+            const det = detections[0];
+            faceDescriptor = Array.from(det.descriptor);
+            
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0);
+            canvas.getContext("2d").drawImage(video, 0, 0);
             
-            const dataURL = canvas.toDataURL('image/jpeg', 0.8);
-            capturedImage.src = dataURL;
-            capturedImage.style.display = 'block';
-            video.style.display = 'none';
+            preview.src = canvas.toDataURL("image/jpeg");
+            preview.style.display = "block";
+            video.style.display = "none";
             
-            imageDataInput.value = dataURL;
+            captureBtn.style.display = "none";
+            retakeBtn.style.display = "inline-flex";
+            statusText.innerText = "Face captured";
             
-            captureBtn.style.display = 'none';
-            recaptureBtn.style.display = 'inline-block';
-            startCameraBtn.style.display = 'none';
-            captureStatus.textContent = '✅ Face captured! You can save the student now.';
-            isCaptured = true;
-            
-            // Stop camera stream
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-            }
-        });
+            stream.getTracks().forEach(t => t.stop());
+        };
         
-        // Recapture
-        recaptureBtn.addEventListener('click', async function() {
-            capturedImage.style.display = 'none';
-            imageDataInput.value = '';
+        /* ---------- RETAKE ---------- */
+        retakeBtn.onclick = async () => {
+            faceDescriptor = null;
+            preview.style.display = "none";
+            video.style.display = "block";
+            retakeBtn.style.display = "none";
+            captureBtn.style.display = "inline-flex";
+            
+            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            video.srcObject = stream;
+        };
+        
+        /* ---------- SUBMIT ---------- */
+        document.getElementById("registrationForm").onsubmit = async (e) => {
+            e.preventDefault();
+            
+            console.log("Form submitted");
+            console.log("faceDescriptor exists:", !!faceDescriptor);
+            console.log("modelsLoaded:", modelsLoaded);
+            
+            if (!faceDescriptor) {
+                showToast("Capture face first!", "warning");
+                return;
+            }
+            
+            const payload = {
+                student_id: document.getElementById("student_id").value,
+                name: document.getElementById("name").value,
+                department: document.getElementById("department").value,
+                year: document.getElementById("year").value,
+                section: document.getElementById("section").value,
+                encoding: faceDescriptor
+            };
+            
+            console.log("Sending payload with", payload.encoding?.length, "descriptor values");
             
             try {
-                stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { 
-                        facingMode: 'user',
-                        width: { ideal: 640 },
-                        height: { ideal: 480 }
-                    } 
+                showLoader();
+                const res = await fetch("/register", {
+                    method: "POST",
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    credentials: 'same-origin',  // Include cookies
+                    body: JSON.stringify(payload)
                 });
-                video.srcObject = stream;
-                video.style.display = 'block';
-                recaptureBtn.style.display = 'none';
-                captureBtn.style.display = 'inline-block';
-                captureStatus.textContent = 'Camera started. Click "Capture" to save face.';
-                isCaptured = false;
+                console.log("Response status:", res.status);
+                console.log("Response URL:", res.url);
+                console.log("Response type:", res.type);
+                
+                // Check if we were redirected to login
+                if (res.url.includes('/login')) {
+                    hideLoader();
+                    showToast("Session expired! Please login again.", "error");
+                    setTimeout(() => window.location.href = '/login', 2000);
+                    return;
+                }
+                
+                // Try to get JSON response
+                const contentType = res.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    const text = await res.text();
+                    console.log("Response text:", text.substring(0, 200));
+                    hideLoader();
+                    showToast("Server error: " + (text.substring(0, 100) || "Invalid response"), "error");
+                    return;
+                }
+                
+                const data = await res.json();
+                console.log("Response data:", data);
+                hideLoader();
+                
+                if (res.ok && data.type === "success") {
+                    showToast("Student Registered Successfully!", "success");
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showToast(data.text || `Error: ${res.status}`, "error");
+                }
             } catch (err) {
-                alert('Error accessing camera: ' + err.message);
+                console.error("Fetch error:", err);
+                hideLoader();
+                showToast("Network error: " + err.message, "error");
             }
-        });
         
-        // Form submission validation
-        document.getElementById('registrationForm').addEventListener('submit', function(e) {
-            if (!isCaptured) {
-                e.preventDefault();
-                alert('Please capture the student\'s face before submitting!');
+        };
+        
+        
+        /* ---------- LOAD STUDENTS LIST ---------- */
+        async function loadStudents() {
+            const tbody = document.getElementById('studentsList');
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 30px;"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
+            
+            try {
+                const res = await fetch('/api/students', {
+                    credentials: 'same-origin'
+                });
+                
+                if (res.url.includes('/login')) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 30px;">Please login to view students</td></tr>';
+                    return;
+                }
+                
+                const students = await res.json();
+                
+                if (students.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 30px;"><i class="fas fa-users"></i> No students registered yet</td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = students.map(s => `
+                    <tr>
+                        <td><strong>${s.student_id}</strong></td>
+                        <td>${s.name}</td>
+                        <td>${s.department}</td>
+                        <td>${s.year}</td>
+                        <td>${s.section}</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger" onclick="confirmDelete('${s.student_id}', '${s.name}')">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Error loading students:', err);
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 30px; color: var(--danger);">Error loading students</td></tr>';
             }
-        });
+        }
+        
+        /* ---------- DELETE STUDENT ---------- */
+        let studentToDelete = null;
+        
+        function confirmDelete(studentId, studentName) {
+            studentToDelete = { id: studentId, name: studentName };
+            document.getElementById('deleteStudentName').innerText = `${studentName} (${studentId})`;
+            document.getElementById('deleteModal').classList.add('show');
+        }
+        
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('show');
+            studentToDelete = null;
+        }
+        
+        document.getElementById('confirmDeleteBtn').onclick = async () => {
+            if (!studentToDelete) return;
+            
+            const btn = document.getElementById('confirmDeleteBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+            btn.disabled = true;
+            
+            try {
+                const res = await fetch(`/api/students/${studentToDelete.id}`, {
+                    method: 'DELETE',
+                    credentials: 'same-origin'
+                });
+                
+                const data = await res.json();
+                
+                if (data.status === 'success') {
+                    showToast('Student deleted successfully!', 'success');
+                    closeDeleteModal();
+                    loadStudents();  // Refresh the list
+                } else {
+                    showToast(data.message || 'Error deleting student', 'error');
+                }
+            } catch (err) {
+                showToast('Network error occurred', 'error');
+            }
+            
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        };
+        
+        loadModels();
+        loadStudents();
     </script>
 </body>
 </html>
-
